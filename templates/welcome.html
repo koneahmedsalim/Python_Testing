@@ -3,34 +3,115 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Summary | GUDLFT Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            width: 500px;
+            text-align: left;
+        }
+
+        h2 {
+            color: #333;
+            text-align: center;
+        }
+
+        a {
+            color: #ad5858;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 20px;
+        }
+
+        hr {
+            border: 0.5px solid #ccc;
+            margin: 20px 0;
+        }
+
+        .points {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        button, a.book-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            display: inline-block;
+        }
+
+        button:hover, a.book-btn:hover {
+            background-color: #45a049;
+        }
+
+        .messages {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-        <h2>Welcome, {{club['email']}} </h2><a href="{{url_for('logout')}}">Logout</a>
+    <div class="container">
+        <h2>Welcome, {{club['email']}} </h2>
+        <a href="{{url_for('logout')}}">Logout</a>
 
-    {% with messages = get_flashed_messages()%}
-    {% if messages %}
+        {% with messages = get_flashed_messages()%}
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li>{{message}}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% endwith %}
+        
+        <p class="points">Points available: {{club['points']}}</p>
+        
+        <h3>Competitions:</h3>
         <ul>
-       {% for message in messages %}
-            <li>{{message}}</li>
-        {% endfor %}
-       </ul>
-    {% endif%}
-    Points available: {{club['points']}}
-    <h3>Competitions:</h3>
-    <ul>
-        {% for comp in competitions%}
-        <li>
-            {{comp['name']}}<br />
-            Date: {{comp['date']}}</br>
-            Number of Places: {{comp['numberOfPlaces']}}
-            {%if comp['numberOfPlaces']|int >0%}
-            <a href="{{ url_for('book',competition=comp['name'],club=club['name']) }}">Book Places</a>
-            {%endif%}
-        </li>
-        <hr />
-        {% endfor %}
-    </ul>
-    {%endwith%}
-
+            {% for comp in competitions %}
+            <li>
+                <strong>{{comp['name']}}</strong><br />
+                Date: {{comp['date']}}<br />
+                Number of Places: {{comp['numberOfPlaces']}}
+                {% if comp['numberOfPlaces']|int > 0 %}
+                    <br />
+                    <a class="book-btn" href="{{ url_for('book', competition=comp['name'], club=club['name']) }}">Book Places</a>
+                {% endif %}
+            </li>
+            <hr />
+            {% endfor %}
+        </ul>
+    </div>
 </body>
 </html>
